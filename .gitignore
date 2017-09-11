@@ -1,0 +1,13 @@
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+backend/src/Core/bin
+backend/src/Core/obj
+backend/src/Infrastructure/bin
+backend/src/Infrastructure/obj
+backend/src/Api/bin
+backend/src/Api/obj
