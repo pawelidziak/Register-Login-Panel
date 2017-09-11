@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using Core.Domain;
 using Core.Repositories;
 using Infrastructure.DTO;
 
@@ -9,24 +11,34 @@ namespace Infrastructure.Services
     {
 
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
+
         }
 
-        public Task<UserDto> GetUserAsync(Guid userId)
+        public async Task<UserDto> GetUserAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task LoginAsync(string email, string password)
+        public async Task LoginAsync(string email, string password)
         {
             throw new NotImplementedException();
         }
 
-        public Task RegisterAsync(Guid userId, string email, string name, string password, string role = "user")
+        public async Task RegisterAsync(Guid userId, string email, string name, string password, string role = "user")
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAsync(email);
+            if(user != null)
+            {
+                throw new Exception($"User with email: '{email}' already exists.");
+            }
+            user = new User(userId, role, name, email, password);
+            await _userRepository.AddAsync(user);
         }
     }
+}
