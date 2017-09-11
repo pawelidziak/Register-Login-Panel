@@ -23,5 +23,9 @@ namespace Api.Controllers
             return Created("/user", null);
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Post([FromBody]Login command)
+            => Json(await _userService.LoginAsync(command.Email, command.Password));
+
     }
 }

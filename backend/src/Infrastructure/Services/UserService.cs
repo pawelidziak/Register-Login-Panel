@@ -12,12 +12,13 @@ namespace Infrastructure.Services
 
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IJwtHandler _jwtHandler;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IJwtHandler jwtHandler, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-
+            _jwtHandler = jwtHandler;
         }
 
         public async Task<UserDto> GetUserAsync(Guid userId)
@@ -27,13 +28,33 @@ namespace Infrastructure.Services
 
         public async Task LoginAsync(string email, string password)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAsync(email);
+            if (user == null)
+            {
+                throw new Exception($"Invalid credentials.");
+            }
+
+            // SPRAWDZANIE HASŁA - PRYMITYWNE
+            // powinno być hashowanie, metody zabezpieczające
+            if (user.Password != password)
+            {
+                throw new Exception($"Invalid credentials.");
+            }
+
+            var jwt = _jwtHandler.CreateToken(user.Id, user.Role);
+
+            return new TokenDto
+            {
+                Token = jwt.Token,
+                Expires = jwt.Expires,
+                Role = user.Role
+            };
         }
 
         public async Task RegisterAsync(Guid userId, string email, string name, string password, string role = "user")
         {
             var user = await _userRepository.GetAsync(email);
-            if(user != null)
+            if (user != null)
             {
                 throw new Exception($"User with email: '{email}' already exists.");
             }
