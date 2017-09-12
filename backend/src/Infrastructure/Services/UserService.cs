@@ -5,6 +5,7 @@ using Core.Domain;
 using Core.Repositories;
 using Infrastructure.DTO;
 using Infrastructure.Errors;
+using Infrastructure.Extensions;
 
 namespace Infrastructure.Services
 {
@@ -24,7 +25,8 @@ namespace Infrastructure.Services
 
         public async Task<UserDto> GetUserAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetOrFailAsync(userId);
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<TokenDto> LoginAsync(string email, string password)

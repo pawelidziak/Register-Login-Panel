@@ -69,8 +69,9 @@ namespace Api
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)), // better: config.Key
 
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings.Issuer,
+                    // nie sprawdzam odbiorców
+                    ValidateAudience = false,
+                    // ValidAudience = jwtSettings.Issuer,
 
                     ValidateIssuer = true,
                     ValidIssuer = jwtSettings.Issuer, // better: config.Issuer

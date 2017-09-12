@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Infrastructure.Commands.Users;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,5 +29,11 @@ namespace Api.Controllers
         public async Task<IActionResult> Post([FromBody]Login command)
             => Json(await _userService.LoginAsync(command.Email, command.Password));
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Get()
+            => Json(await _userService.GetUserAsync(UserId));
+        
+       
     }
 }
