@@ -19,14 +19,14 @@ namespace Infrastructure.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public JwtDto CreateToken(Guid userId, string role)
+        public JwtDto CreateToken(Guid userId)
         {
             var now = DateTime.UtcNow;
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
-                new Claim(ClaimTypes.Role, role),
+                // new Claim(ClaimTypes.Role, role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),      //id tokenu
                 new Claim(JwtRegisteredClaimNames.Iat, now.ToTimestamp().ToString()),   //moment stworzenia tokenu
             };

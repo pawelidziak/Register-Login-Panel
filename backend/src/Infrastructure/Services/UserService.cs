@@ -42,13 +42,12 @@ namespace Infrastructure.Services
                 throw new LoginFailedException($"Login failed. Invalid credentials.");
             }
 
-            var jwt = _jwtHandler.CreateToken(user.Id, user.Role);
+            var jwt = _jwtHandler.CreateToken(user.Id);
 
             return new TokenDto
             {
                 Token = jwt.Token,
-                Expires = jwt.Expires,
-                Role = user.Role
+                Expires = jwt.Expires
             };
         }
 

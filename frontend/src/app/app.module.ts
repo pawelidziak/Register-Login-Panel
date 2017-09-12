@@ -11,6 +11,7 @@ import { HttpModule } from '@angular/http';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import {AuthGuard} from './_guards/auth.guard';
+import {AuthService} from './_services/auth.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import {AuthGuard} from './_guards/auth.guard';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [UserService, AuthGuard],
+  providers: [UserService, AuthGuard, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

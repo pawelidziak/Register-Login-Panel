@@ -6,11 +6,12 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import {RegisterCommand} from '../_models/RegisterCommand';
 import {LoginCommand} from '../_models/LoginCommand';
+import {AuthService} from './auth.service';
 
 @Injectable()
 export class UserService {
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private _authService: AuthService) {
   }
 
   register(user: RegisterCommand): Observable<any> {
@@ -27,10 +28,9 @@ export class UserService {
   login(user: LoginCommand): Observable<any> {
     return this.http.post('http://localhost:5000/user/login', user)
       .map((res: Response) => {
-      console.log(res.json());
         const token = res.json().token;
         if (token) {
-          localStorage.setItem('token', JSON.stringify(token));
+          this._authService.setAccessToken(token, true);
         }
       })
       .catch((error: any) => {
@@ -43,7 +43,7 @@ export class UserService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this._authService.clearAccessToken();
   }
 
   private jwt() {
