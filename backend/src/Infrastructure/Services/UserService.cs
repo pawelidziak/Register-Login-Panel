@@ -4,6 +4,7 @@ using AutoMapper;
 using Core.Domain;
 using Core.Repositories;
 using Infrastructure.DTO;
+using Infrastructure.Errors;
 
 namespace Infrastructure.Services
 {
@@ -56,7 +57,7 @@ namespace Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if (user != null)
             {
-                throw new Exception($"User with email: '{email}' already exists.");
+                throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
             }
             user = new User(userId, role, name, email, password);
             await _userRepository.AddAsync(user);

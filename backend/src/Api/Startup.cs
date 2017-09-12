@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Api.Framework;
 using Core.Repositories;
 using Infrastructure.Mapper;
 using Infrastructure.Repositories;
@@ -93,7 +94,7 @@ namespace Api
 
             // CORS
             app.UseCors("MyPolicy");
-
+            app.UseErrorHandler();
             app.UseAuthentication();
             app.UseMvc();
         }

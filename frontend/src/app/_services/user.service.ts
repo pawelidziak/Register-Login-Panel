@@ -16,7 +16,9 @@ export class UserService {
     return this.http.post('http://localhost:5000/user/register', user)
       .catch((error: any) => {
         if (error) {
-          return Observable.throw(new Error('This email is occupied.'));
+          if (error.status === 409) {
+            return Observable.throw(new Error('This email is occupied.'));
+          }
         }
       });
   }
