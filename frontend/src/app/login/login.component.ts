@@ -55,7 +55,8 @@ export class LoginComponent implements OnInit {
           this._router.navigate(['/home']);
           },
         error => {
-          this.error = error.toString().substr(7, error.length);;
+          this.error = error.toString().substr(7, error.length);
         });
   }
+
 }

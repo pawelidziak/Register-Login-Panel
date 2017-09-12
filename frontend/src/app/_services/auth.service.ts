@@ -1,34 +1,32 @@
+import {Headers, RequestOptions} from '@angular/http';
+
 export class AuthService {
 
-  token: string;
-  private isSessionStored: boolean;
-
   constructor() {
-    this.token = '';
   }
 
-  setAccessToken(token: string, isSessionStored: boolean): void {
-    if (isSessionStored) {
-      localStorage.setItem('token', token);
-      sessionStorage.clear();
-    } else {
-      sessionStorage.setItem('token', token);
-      localStorage.clear();
-    }
-
-    this.token = token;
-    this.isSessionStored = isSessionStored;
+  setJwtToken(token: string): void {
+    localStorage.setItem('token', token);
   }
 
-  getAccessToken(): string {
-    return this.isSessionStored ? localStorage.getItem('token') : sessionStorage.getItem('token');
+  private getAccessToken(): string {
+    return localStorage.getItem('token');
   }
 
-  clearAccessToken(): void {
+  clearJwtToken(): void {
     localStorage.removeItem('token');
     localStorage.clear();
     sessionStorage.clear();
     document.cookie = '';
+  }
+
+  createJwtHeader(): RequestOptions {
+    // tworzenie nagłówka dla jwt bearer
+    const token = this.getAccessToken();
+    if (token) {
+      const headers = new Headers({'Authorization': 'Bearer ' + token});
+      return new RequestOptions({headers: headers});
+    }
   }
 
 }

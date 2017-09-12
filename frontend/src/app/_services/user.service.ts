@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 import {RegisterCommand} from '../_models/RegisterCommand';
 import {LoginCommand} from '../_models/LoginCommand';
 import {AuthService} from './auth.service';
+import {IUser} from '../_models/IUser';
 
 @Injectable()
 export class UserService {
@@ -30,7 +31,7 @@ export class UserService {
       .map((res: Response) => {
         const token = res.json().token;
         if (token) {
-          this._authService.setAccessToken(token, true);
+          this._authService.setJwtToken(token);
         }
       })
       .catch((error: any) => {
@@ -42,16 +43,19 @@ export class UserService {
       });
   }
 
-  logout(): void {
-    this._authService.clearAccessToken();
+  getMe(): Observable<IUser> {
+    return this.http.get('http://localhost:5000/user', this._authService.createJwtHeader())
+      .map((res: Response) => res.json())
+      .catch((error: any) => {
+        if (error) {
+          return Observable.throw(new Error('Unauthorized.'));
+        }
+      });
   }
 
-  private jwt() {
-    // tworzenie nagłówka dla jwt bearer
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
-      const headers = new Headers({'Authorization': 'Bearer ' + currentUser.token});
-      return new RequestOptions({headers: headers});
-    }
+  logout(): void {
+    this._authService.clearJwtToken();
   }
+
+
 }

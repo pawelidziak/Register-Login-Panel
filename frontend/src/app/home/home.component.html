@@ -1,4 +1,14 @@
 <section class="home">
   <p class="text-center">You have been successfully logged in!</p>
+
+
+
+  <p>Id: {{currentUser.id}}</p>
+  <p>Name: {{currentUser.name}}</p>
+  <p>Email: {{currentUser.email}}</p>
+  <p>Role: {{currentUser.role}}</p>
+  <p>Joined at: {{currentUser.createdAt}}</p>
+
+
   <a [routerLink]="['/login']" class="btn btn-link">Logout</a>
 </section>
