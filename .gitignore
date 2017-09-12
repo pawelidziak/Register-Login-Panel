@@ -11,3 +11,5 @@ backend/src/Infrastructure/bin
 backend/src/Infrastructure/obj
 backend/src/Api/bin
 backend/src/Api/obj
+
+frontend/node_modules/*
