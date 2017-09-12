@@ -9,12 +9,15 @@ import { routing } from './app.routing';
 import { UserService } from './_services/user.service';
 import { HttpModule } from '@angular/http';
 import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
+import {AuthGuard} from './_guards/auth.guard';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +27,7 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [UserService],
+  providers: [UserService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
