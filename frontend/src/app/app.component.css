@@ -1,0 +1,24 @@
+.icon {
+  text-decoration: none;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 250ms ease-in-out;
+  padding: 0 10px;
+}
+
+.git {
+  color: #333;
+}
+
+.linkedin {
+  color: #0077B5;
+}
+
+.icon:hover {
+  opacity: 1;
+}
+
+.email {
+  padding: 10px;
+  font-style: oblique;
+}
