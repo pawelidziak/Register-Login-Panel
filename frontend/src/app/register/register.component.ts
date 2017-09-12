@@ -1,17 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {User} from '../_models/User';
-import {Router} from '@angular/router';
+import {RegisterCommand} from '../_models/RegisterCommand';
 import {UserService} from '../_services/user.service';
 
 @Component({
-  selector: 'app-register',
+  // selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
 
-  user: User = {
+  registerCommand: RegisterCommand = {
     name: '',
     email: '',
     password: '',
@@ -29,7 +28,7 @@ export class RegisterComponent implements OnInit {
   response: string;
   error: string;
 
-  constructor(private _router: Router, private _userService: UserService) {
+  constructor(private _userService: UserService) {
   }
 
   ngOnInit() {
@@ -65,7 +64,7 @@ export class RegisterComponent implements OnInit {
 
   register() {
     if (this.password.value === this.confirmPassword.value) {
-      this._userService.register(this.user)
+      this._userService.register(this.registerCommand)
         .subscribe(
           res => {
             this.error = '';
@@ -73,7 +72,7 @@ export class RegisterComponent implements OnInit {
           },
           error => {
             this.response = '';
-            this.error = error.toString();
+            this.error = error.toString().substr(7, error.length);;
           });
     }
   }

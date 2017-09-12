@@ -4,7 +4,8 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import {User} from '../_models/user';
+import {RegisterCommand} from '../_models/RegisterCommand';
+import {LoginCommand} from '../_models/LoginCommand';
 
 @Injectable()
 export class UserService {
@@ -12,12 +13,24 @@ export class UserService {
   constructor(private http: Http) {
   }
 
-  register(user: User): Observable<any> {
+  register(user: RegisterCommand): Observable<any> {
     return this.http.post('http://localhost:5000/user/register', user)
       .catch((error: any) => {
         if (error) {
           if (error.status === 409) {
             return Observable.throw(new Error('This email is occupied.'));
+          }
+        }
+      });
+  }
+
+  login(user: LoginCommand): Observable<any> {
+    return this.http.post('http://localhost:5000/user/login', user,)
+      .map((res: Response) => res.json())
+      .catch((error: any) => {
+        if (error) {
+          if (error.status === 401) {
+            return Observable.throw(new Error('Login failed. Invalid credentials.'));
           }
         }
       });

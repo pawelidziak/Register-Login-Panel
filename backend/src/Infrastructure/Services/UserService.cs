@@ -32,14 +32,14 @@ namespace Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if (user == null)
             {
-                throw new Exception($"Invalid credentials.");
+                throw new LoginFailedException($"Login failed. Invalid credentials.");
             }
 
             // SPRAWDZANIE HASŁA - PRYMITYWNE
             // powinno być hashowanie, metody zabezpieczające
             if (user.Password != password)
             {
-                throw new Exception($"Invalid credentials.");
+                throw new LoginFailedException($"Login failed. Invalid credentials.");
             }
 
             var jwt = _jwtHandler.CreateToken(user.Id, user.Role);
