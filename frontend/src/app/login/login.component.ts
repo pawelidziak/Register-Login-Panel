@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginCommand } from '../_models/LoginCommand';
 import { UserService } from '../_services/user.service';
+import {Router} from '@angular/router';
 
 @Component({
   // selector: 'app-login',
@@ -22,9 +23,10 @@ export class LoginComponent implements OnInit {
   error: string;
   loading: boolean;
 
-  constructor(private _userService: UserService) { }
+  constructor(private _router: Router, private _userService: UserService) { }
 
   ngOnInit() {
+    this._userService.logout();
     this.createFormControls();
     this.createForm();
   }
@@ -50,8 +52,8 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
           this.error = '';
-          console.log(res);
-        },
+          this._router.navigate(['/home']);
+          },
         error => {
           this.error = error.toString().substr(7, error.length);;
         });

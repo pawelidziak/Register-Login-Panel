@@ -25,8 +25,14 @@ export class UserService {
   }
 
   login(user: LoginCommand): Observable<any> {
-    return this.http.post('http://localhost:5000/user/login', user,)
-      .map((res: Response) => res.json())
+    return this.http.post('http://localhost:5000/user/login', user)
+      .map((res: Response) => {
+      console.log(res.json());
+        const token = res.json().token;
+        if (token) {
+          localStorage.setItem('token', JSON.stringify(token));
+        }
+      })
       .catch((error: any) => {
         if (error) {
           if (error.status === 401) {
@@ -36,8 +42,12 @@ export class UserService {
       });
   }
 
+  logout(): void {
+    localStorage.removeItem('token');
+  }
+
   private jwt() {
-    // create authorization header with jwt token
+    // tworzenie nagłówka dla jwt bearer
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
       const headers = new Headers({'Authorization': 'Bearer ' + currentUser.token});
