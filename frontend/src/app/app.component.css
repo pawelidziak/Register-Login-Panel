@@ -1,3 +1,19 @@
+.app-container {
+  background: #e9e9e9;
+  padding: 30px 0 50px 0;
+  margin-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.header-text {
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-size: 25px;
+}
+
 .icon {
   text-decoration: none;
   opacity: 0.5;
