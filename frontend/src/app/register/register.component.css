@@ -1,3 +1,7 @@
-ngb-alert{
+.register {
+  padding: 50px 0;
+}
+
+ngb-alert {
   font-size: 12px;
 }
