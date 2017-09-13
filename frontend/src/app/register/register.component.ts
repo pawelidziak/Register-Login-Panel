@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RegisterCommand} from '../_models/RegisterCommand';
+import {IRegisterCommand} from '../_models/IRegisterCommand';
 import {UserService} from '../_services/user.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {UserService} from '../_services/user.service';
 })
 export class RegisterComponent implements OnInit {
 
-  registerCommand: RegisterCommand = {
+  registerCommand: IRegisterCommand = {
     name: '',
     email: '',
     password: '',

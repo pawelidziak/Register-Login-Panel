@@ -1,4 +1,4 @@
-export class RegisterCommand {
+export class IRegisterCommand {
   name: string;
   email: string;
   password: string;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { LoginCommand } from '../_models/LoginCommand';
+import { ILoginCommand } from '../_models/ILoginCommand';
 import { UserService } from '../_services/user.service';
 import {Router} from '@angular/router';
 
@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  loginCommand: LoginCommand = {
+  loginCommand: ILoginCommand = {
     email: '',
     password: ''
   };

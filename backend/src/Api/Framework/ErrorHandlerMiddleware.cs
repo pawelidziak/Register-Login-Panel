@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Errors;
 using Microsoft.AspNetCore.Http;
@@ -32,36 +33,43 @@ public class ErrorHandlerMiddleware
         {
             var exceptionType = exception.GetType();
             var statusCode = HttpStatusCode.InternalServerError;
+            var error = "";
             switch (exception)
             {
-                case Exception e when exceptionType == typeof(UnauthorizedAccessException):
-                    statusCode = HttpStatusCode.Unauthorized;
-                    break;
-
                 case Exception e when exceptionType == typeof(ArgumentException):
-                    statusCode = HttpStatusCode.BadRequest;
-                    break;
-                case Exception e when exceptionType == typeof(UserAlreadyExistException):
-                    statusCode = HttpStatusCode.Conflict;
+                    statusCode = HttpStatusCode.BadRequest; // 400
                     break;
                 case Exception e when exceptionType == typeof(UserDoesNotExistsException):
-                    statusCode = HttpStatusCode.Conflict;
+                    statusCode = HttpStatusCode.BadRequest; // 400
+                    error = "UserNotFound";
                     break;
                 case Exception e when exceptionType == typeof(InvalidRequestException):
-                    statusCode = HttpStatusCode.BadRequest;
+                    statusCode = HttpStatusCode.BadRequest; // 400
+                    error = "InvalidRequest";
+                    break;
+                case Exception e when exceptionType == typeof(UnauthorizedAccessException):
+                    statusCode = HttpStatusCode.Unauthorized; // 401
+                    error = "Unauthorized";
                     break;
                 case Exception e when exceptionType == typeof(LoginFailedException):
-                    statusCode = HttpStatusCode.Unauthorized;
+                    statusCode = HttpStatusCode.Unauthorized; // 401
+                    error = "LoginFailed";
+                    break;
+                case Exception e when exceptionType == typeof(UserAlreadyExistException):
+                    statusCode = HttpStatusCode.Conflict; // 409
+                    error = "UserAlreadyExist";
+                    break;
+                case Exception e when exceptionType == typeof(PasswordMismatchException):
+                    statusCode = HttpStatusCode.Conflict; // 409
+                    error = "PasswordMismatch";
                     break;
             }
 
-            var response = new { message = exception.Message };
+            var response = new { message = exception.Message, error = error };
             var payload = JsonConvert.SerializeObject(response);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
-
             return context.Response.WriteAsync(payload);
-
         }
     }
 }

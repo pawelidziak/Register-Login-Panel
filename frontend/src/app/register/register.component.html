@@ -13,7 +13,7 @@
 
       <form [(formGroup)]="registerForm" novalidate #f="ngForm" (ngSubmit)="f.form.valid && register()">
 
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !name.valid }">
+        <div class="form-group">
           <input type="text" class="form-control" formControlName="name" [(ngModel)]="registerCommand.name" required
                  placeholder="Name*"/>
           <ngb-alert type="danger" *ngIf="f.submitted && !name.valid" [dismissible]="false">
@@ -21,7 +21,7 @@
           </ngb-alert>
         </div>
 
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+        <div class="form-group">
           <input type="email" class="form-control" formControlName="email" [(ngModel)]="registerCommand.email" required
                  placeholder="Email*"/>
           <ngb-alert type="danger" *ngIf="f.submitted && !email.valid" [dismissible]="false">
@@ -29,7 +29,7 @@
           </ngb-alert>
         </div>
 
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
+        <div class="form-group">
           <input type="password" class="form-control" formControlName="password" [(ngModel)]="registerCommand.password" required
                  placeholder="Password*"/>
           <ngb-alert type="danger" *ngIf="f.submitted && !password.valid" [dismissible]="false">
@@ -37,7 +37,7 @@
           </ngb-alert>
         </div>
 
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !confirmPassword.valid }">
+        <div class="form-group">
           <input type="password" class="form-control" formControlName="confirmPassword" required
                  placeholder="Confirm password*"/>
           <ngb-alert type="danger" *ngIf="f.submitted && confirmPassword.value !== password.value"

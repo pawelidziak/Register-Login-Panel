@@ -74,7 +74,7 @@ namespace Infrastructure.Services
             var user = await _userRepository.GetAsync(userId);
             if (user == null)
             {
-                throw new Exception($"User with id: '{userId}' does not exists.");
+                throw new UserDoesNotExistsException($"User with id: '{userId}' does not exists.");
             }
             var loggedEmail = user.Email;
             var userWithInputEmail = await _userRepository.GetAsync(email);
@@ -102,16 +102,16 @@ namespace Infrastructure.Services
 
             if (user == null)
             {
-                throw new Exception($"User with id: '{userId}' does not exists.");
+                throw new UserDoesNotExistsException($"User with id: '{userId}' does not exists.");
             }
 
             var oldHash = _encrypter.GetHash(oldPassword, user.Salt);
             // sprawdzenie, czy stare hasło się zgadza
             if (user.Password != oldHash)
             {
-                throw new InvalidRequestException($"Old passwords does not match.");
+                throw new PasswordMismatchException($"Old password does not match.");
             }
-            
+
             // sprawdzenie, czy hasła nie są jednakowe
             var newHash = _encrypter.GetHash(newPassword, user.Salt);
             if (oldHash == newHash)

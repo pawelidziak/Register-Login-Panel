@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../_services/user.service';
 import {IUser} from '../_models/IUser';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {UpdateCommand} from '../_models/UpdateCommand';
+import {IUpdatePersonalCommand} from '../_models/IUpdatePersonalCommand';
 import {Subject} from 'rxjs/Subject';
 import {debounceTime} from 'rxjs/operator/debounceTime';
+import {IUpdatePasswordCommand} from '../_models/IUpdatePasswordCommand';
 
 @Component({
   // selector: 'app-home',
@@ -106,12 +107,12 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  update(): void {
-    const command: UpdateCommand = {
+  updatePersonal(): void {
+    const command: IUpdatePersonalCommand = {
       name: this.currentUser.name,
       email: this.currentUser.email
     };
-    this._userService.update(this.currentUser.id, command)
+    this._userService.updatePersonal(this.currentUser.id, command)
       .subscribe(
         res => {
           this.isResError = false;
@@ -123,12 +124,28 @@ export class HomeComponent implements OnInit {
           this._response.next(error.toString().substr(7, error.length));
         });
   }
+  updatePassword(): void {
+    if (this.newPassword.value === this.confirmPassword.value) {
+      const command: IUpdatePasswordCommand = {
+        oldPassword: this.oldPassword.value,
+        newPassword: this.newPassword.value
+      };
+      console.log('tak');
+      this._userService.updatePassword(this.currentUser.id, command)
+        .subscribe(
+          res => {
+            this.isResError = false;
+            this._response.next('Password updated correctly.');
+            this.currentUserName = this.currentUser.name;
+          },
+          error => {
+            this.isResError = true;
+            this._response.next(error.toString().substr(7, error.length));
+          });
+    }
+  }
 
   checkRes = () => this.isResError ? 'danger' : 'success';
-
-
-  isNullOrWhitespace() {
-    return !this.name.value || !this.name.value.trim();
-  }
+  isNullOrWhitespace = () => !this.name.value || !this.name.value.trim();
 
 }
