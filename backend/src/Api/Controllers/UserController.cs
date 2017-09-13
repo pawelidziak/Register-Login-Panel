@@ -34,6 +34,13 @@ namespace Api.Controllers
         public async Task<IActionResult> Get()
             => Json(await _userService.GetUserAsync(UserId));
         
-       
+        [HttpPut("{userId}")]
+        [Authorize]
+        public async Task<IActionResult> Put(Guid userId, [FromBody]UpdateUser command)
+        {
+            // command.UserId = Guid.NewGuid();
+            await _userService.UpdatePersonalAsync(userId, command.Name, command.Email);
+            return NoContent(); //204
+        }
     }
 }

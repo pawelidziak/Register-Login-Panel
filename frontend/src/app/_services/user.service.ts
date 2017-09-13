@@ -8,6 +8,7 @@ import {RegisterCommand} from '../_models/RegisterCommand';
 import {LoginCommand} from '../_models/LoginCommand';
 import {AuthService} from './auth.service';
 import {IUser} from '../_models/IUser';
+import {UpdateCommand} from '../_models/UpdateCommand';
 
 @Injectable()
 export class UserService {
@@ -48,7 +49,30 @@ export class UserService {
       .map((res: Response) => res.json())
       .catch((error: any) => {
         if (error) {
-          return Observable.throw(new Error('Unauthorized.'));
+          if (error.status === 401) {
+            return Observable.throw(new Error('Unauthorized.'));
+          }
+          return Observable.throw(new Error());
+        }
+      });
+  }
+
+  update(userId: string, command: UpdateCommand): Observable<any> {
+    return this.http.put('http://localhost:5000/user/' + userId, command, this._authService.createJwtHeader())
+      .catch((error: any) => {
+        if (error) {
+          if (error) {
+            if (error.status === 401) {
+              return Observable.throw(new Error('Unauthorized.'));
+            }
+            if (error.status === 409) {
+              return Observable.throw(new Error('Sorry, that email\'s taken. Try another.'));
+            }
+            if (error.status === 400) {
+              return Observable.throw(new Error(error.json().message));
+            }
+            return Observable.throw(new Error(error.json().message));
+          }
         }
       });
   }
@@ -56,6 +80,5 @@ export class UserService {
   logout(): void {
     this._authService.clearJwtToken();
   }
-
 
 }

@@ -9,5 +9,6 @@ namespace Infrastructure.Services
         Task<UserDto> GetUserAsync(Guid userId);
         Task RegisterAsync(Guid userId, string email, string name, string password, string role = "user");
         Task<TokenDto> LoginAsync(string email, string password);
+        Task UpdatePersonalAsync(Guid userId, string name, string email);
     }
 }

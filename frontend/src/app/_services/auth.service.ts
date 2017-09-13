@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   createJwtHeader(): RequestOptions {
-    // tworzenie nagłówka dla jwt bearer
+    // tworzenie nagłówka dla jwt bearer i zwrócenie opcji
     const token = this.getAccessToken();
     if (token) {
       const headers = new Headers({'Authorization': 'Bearer ' + token});

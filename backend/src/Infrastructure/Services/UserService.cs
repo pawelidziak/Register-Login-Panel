@@ -63,5 +63,33 @@ namespace Infrastructure.Services
             user = new User(userId, role, name, email, password);
             await _userRepository.AddAsync(user);
         }
+
+        public async Task UpdatePersonalAsync(Guid userId, string name, string email)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            if (user == null)
+            {
+                throw new Exception($"User with id: '{userId}' does not exists.");
+            }
+            var loggedEmail = user.Email;
+            var userWithInputEmail = await _userRepository.GetAsync(email);
+            if (userWithInputEmail != null && userWithInputEmail.Email != loggedEmail) 
+            {
+                throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
+            }
+            if (string.IsNullOrWhiteSpace(email)) 
+            {
+                throw new EmptyDataException($"Email cannot be empty.");
+            }
+            if (string.IsNullOrWhiteSpace(name)) 
+            {
+                throw new EmptyDataException($"Name cannot be empty.");
+            }
+
+            user.SetName(name);            
+            user.SetEmail(email);
+            await _userRepository.UpdateAsync(user);
+        }
+
     }
 }

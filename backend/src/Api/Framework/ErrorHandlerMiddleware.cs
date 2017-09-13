@@ -44,6 +44,12 @@ public class ErrorHandlerMiddleware
                 case Exception e when exceptionType == typeof(UserAlreadyExistException):
                     statusCode = HttpStatusCode.Conflict;
                     break;
+                case Exception e when exceptionType == typeof(UserDoesNotExistsException):
+                    statusCode = HttpStatusCode.Conflict;
+                    break;
+                case Exception e when exceptionType == typeof(EmptyDataException):
+                    statusCode = HttpStatusCode.BadRequest;
+                    break;
                 case Exception e when exceptionType == typeof(LoginFailedException):
                     statusCode = HttpStatusCode.Unauthorized;
                     break;

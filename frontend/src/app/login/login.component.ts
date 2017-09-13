@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     this.createForm();
   }
 
-  createFormControls(): void {
+  private createFormControls(): void {
     this.email = new FormControl('', [
       Validators.required
     ]);
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     ]);
   }
 
-  createForm(): void {
+  private createForm(): void {
     this.loginForm = new FormGroup({
       email: this.email,
       password: this.password

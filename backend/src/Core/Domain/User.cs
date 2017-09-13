@@ -26,7 +26,7 @@ namespace Core.Domain
             SetName(name);
             SetEmail(email);
             SetPassword(password);
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow.ToLocalTime();
         }
 
         public void SetName(string name)

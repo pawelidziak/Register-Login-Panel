@@ -20,8 +20,8 @@ export class RegisterComponent implements OnInit {
   loading = false;
 
   registerForm: FormGroup;
-  private name: FormControl;
-  private email: FormControl;
+  name: FormControl;
+  email: FormControl;
   password: FormControl;
   confirmPassword: FormControl;
 
@@ -36,7 +36,7 @@ export class RegisterComponent implements OnInit {
     this.createForm();
   }
 
-  createFormControls(): void {
+  private createFormControls(): void {
     this.name = new FormControl('', Validators.required);
     this.email = new FormControl('', [
       Validators.required,
@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
     ]);
   }
 
-  createForm(): void {
+  private createForm(): void {
     this.registerForm = new FormGroup({
       name: this.name,
       email: this.email,
@@ -72,7 +72,7 @@ export class RegisterComponent implements OnInit {
           },
           error => {
             this.response = '';
-            this.error = error.toString().substr(7, error.length);;
+            this.error = error.toString().substr(7, error.length);
           });
     }
   }
