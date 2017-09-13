@@ -6,21 +6,23 @@ using Core.Repositories;
 using Infrastructure.DTO;
 using Infrastructure.Errors;
 using Infrastructure.Extensions;
+using Infrastructure.Services.Encrypter;
 
 namespace Infrastructure.Services
 {
     public class UserService : IUserService
     {
-
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IJwtHandler _jwtHandler;
+        private readonly IEncrypter _encrypter;
 
-        public UserService(IUserRepository userRepository, IJwtHandler jwtHandler, IMapper mapper)
+        public UserService(IUserRepository userRepository, IJwtHandler jwtHandler, IMapper mapper, IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _jwtHandler = jwtHandler;
+            _encrypter = encrypter;
         }
 
         public async Task<UserDto> GetUserAsync(Guid userId)
@@ -34,14 +36,17 @@ namespace Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if (user == null)
             {
-                throw new LoginFailedException($"Login failed. Invalid credentials.");
+                throw new LoginFailedException($"Login failed. Invalid credentials. 1");
             }
 
-            // SPRAWDZANIE HASŁA - PRYMITYWNE
-            // powinno być hashowanie, metody zabezpieczające
-            if (user.Password != password)
+            
+            var hash = _encrypter.GetHash(password, user.Salt);
+            Console.Write(user.Password);
+            Console.Write('\n');
+            Console.Write(hash);
+            if (user.Password != hash)
             {
-                throw new LoginFailedException($"Login failed. Invalid credentials.");
+                throw new LoginFailedException($"Login failed. Invalid credentials. 2");
             }
 
             var jwt = _jwtHandler.CreateToken(user.Id);
@@ -60,7 +65,11 @@ namespace Infrastructure.Services
             {
                 throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
             }
-            user = new User(userId, role, name, email, password);
+
+            var salt = _encrypter.GetSalt(password);
+            var hash = _encrypter.GetHash(password, salt);
+
+            user = new User(userId, role, name, email, hash, salt);
             await _userRepository.AddAsync(user);
         }
 

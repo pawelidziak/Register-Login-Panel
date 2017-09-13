@@ -8,6 +8,7 @@ using Core.Repositories;
 using Infrastructure.Mapper;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Encrypter;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,7 @@ namespace Api
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IJwtHandler, JwtHandler>();
+            services.AddSingleton<IEncrypter, Encrypter>();
 
             // CORS
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

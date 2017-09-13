@@ -9,10 +9,7 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static readonly ISet<User> _users = new HashSet<User>() {
-            new User(Guid.NewGuid(), "user", "user 1", "t@t.pl", "a"),
-            new User(Guid.NewGuid(), "user", "user 2", "t1@t.pl", "a")
-        };
+        private static readonly ISet<User> _users = new HashSet<User>();
 
         public async Task<User> GetAsync(Guid id)
             => await Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
