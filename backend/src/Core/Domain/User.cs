@@ -28,7 +28,7 @@ namespace Core.Domain
             SetEmail(email);
             SetPassword(password);
             CreatedAt = DateTime.UtcNow.ToLocalTime();
-            Salt = salt;
+            SetSalt(salt);
         }
 
         public void SetName(string name)
@@ -71,6 +71,15 @@ namespace Core.Domain
             }
             // dodatkowa validacja dla sily hasla
             Password = password;
+        }
+
+        public void SetSalt(string salt)
+        {
+            if (string.IsNullOrWhiteSpace(salt))
+            {
+                throw new Exception($"User can not have an empty salt.");
+            }
+            Salt = salt;
         }
     }
 }

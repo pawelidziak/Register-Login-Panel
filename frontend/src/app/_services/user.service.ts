@@ -58,7 +58,7 @@ export class UserService {
   }
 
   update(userId: string, command: UpdateCommand): Observable<any> {
-    return this.http.put('http://localhost:5000/user/' + userId, command, this._authService.createJwtHeader())
+    return this.http.put('http://localhost:5000/user/update/' + userId, command, this._authService.createJwtHeader())
       .catch((error: any) => {
         if (error) {
           if (error) {

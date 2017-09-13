@@ -39,11 +39,7 @@ namespace Infrastructure.Services
                 throw new LoginFailedException($"Login failed. Invalid credentials. 1");
             }
 
-            
             var hash = _encrypter.GetHash(password, user.Salt);
-            Console.Write(user.Password);
-            Console.Write('\n');
-            Console.Write(hash);
             if (user.Password != hash)
             {
                 throw new LoginFailedException($"Login failed. Invalid credentials. 2");
@@ -88,15 +84,47 @@ namespace Infrastructure.Services
             }
             if (string.IsNullOrWhiteSpace(email)) 
             {
-                throw new EmptyDataException($"Email cannot be empty.");
+                throw new InvalidRequestException($"Email cannot be empty.");
             }
             if (string.IsNullOrWhiteSpace(name)) 
             {
-                throw new EmptyDataException($"Name cannot be empty.");
+                throw new InvalidRequestException($"Name cannot be empty.");
             }
 
             user.SetName(name);            
             user.SetEmail(email);
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task UpdatePasswordAsync(Guid userId, string oldPassword, string newPassword)
+        {
+            var user = await _userRepository.GetAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception($"User with id: '{userId}' does not exists.");
+            }
+
+            var oldHash = _encrypter.GetHash(oldPassword, user.Salt);
+            // sprawdzenie, czy stare hasło się zgadza
+            if (user.Password != oldHash)
+            {
+                throw new InvalidRequestException($"Old passwords does not match.");
+            }
+            
+            // sprawdzenie, czy hasła nie są jednakowe
+            var newHash = _encrypter.GetHash(newPassword, user.Salt);
+            if (oldHash == newHash)
+            {
+                throw new InvalidRequestException($"New passwords is the same as old.");
+            }
+
+            // stworzenie nowego zahashowanego hasla na bazie nowej soli
+            var newSalt = _encrypter.GetSalt(newPassword);
+            newHash = _encrypter.GetHash(newPassword, newSalt);
+
+            user.SetPassword(newHash);
+            user.SetSalt(newSalt);
             await _userRepository.UpdateAsync(user);
         }
 
