@@ -38,6 +38,11 @@ public class ErrorHandlerMiddleware
             {
                 case Exception e when exceptionType == typeof(ArgumentException):
                     statusCode = HttpStatusCode.BadRequest; // 400
+                    error = "ImproperArgument";
+                    break;
+                case Exception e when exceptionType == typeof(ArgumentNullException):
+                    statusCode = HttpStatusCode.BadRequest; // 400
+                    error = "ArgumentNull";
                     break;
                 case Exception e when exceptionType == typeof(UserDoesNotExistsException):
                     statusCode = HttpStatusCode.BadRequest; // 400

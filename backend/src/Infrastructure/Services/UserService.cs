@@ -1,4 +1,6 @@
 using System;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Domain;
@@ -60,6 +62,21 @@ namespace Infrastructure.Services
             if (user != null)
             {
                 throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
+            }
+            
+            try
+            {
+                var mailAddress = new MailAddress(email);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException($"Email: '{email}' is improper.");
+            }
+
+            var passwordRegex = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,10}";
+            if(!Regex.IsMatch(password, passwordRegex)){
+                Console.WriteLine(password);
+                throw new ArgumentException($"Password does not meets the requirements.");
             }
 
             var salt = _encrypter.GetSalt(password);

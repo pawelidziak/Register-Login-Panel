@@ -35,7 +35,7 @@ namespace Core.Domain
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new Exception($"User can not have an empty name.");
+                throw new ArgumentNullException($"User can not have an empty name.");
             }
             Name = name;
         }
@@ -44,7 +44,7 @@ namespace Core.Domain
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                throw new Exception($"User can not have an empty email.");
+                throw new ArgumentNullException($"User can not have an empty email.");
             }
             Email = email;
         }
@@ -53,12 +53,12 @@ namespace Core.Domain
         {
             if (string.IsNullOrWhiteSpace(role))
             {
-                throw new Exception($"User can not have an empty role.");
+                throw new ArgumentNullException($"User can not have an empty role.");
             }
             role = role.ToLowerInvariant();
             if (!_roles.Contains(role))
             {
-                throw new Exception($"User can not have a role: '{role}'.");
+                throw new ArgumentException($"User can not have a role: '{role}'.");
             }
             Role = role;
         }
@@ -67,9 +67,10 @@ namespace Core.Domain
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new Exception($"User can not have an empty password.");
+                Console.WriteLine("cos1");
+                throw new ArgumentNullException($"User can not have an empty password.");
             }
-            // dodatkowa validacja dla sily hasla
+            // dodatkowa validacja dla sily hasla jest w serwisie rejestracji
             Password = password;
         }
 
@@ -77,7 +78,7 @@ namespace Core.Domain
         {
             if (string.IsNullOrWhiteSpace(salt))
             {
-                throw new Exception($"User can not have an empty salt.");
+                throw new ArgumentNullException($"User can not have an empty salt.");
             }
             Salt = salt;
         }
