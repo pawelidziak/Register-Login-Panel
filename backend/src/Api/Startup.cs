@@ -41,9 +41,11 @@ namespace Api
             services.AddSingleton(AutoMapperConfig.Initialize());
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IJwtHandler, JwtHandler>();
             services.AddSingleton<IEncrypter, Encrypter>();
+
 
             // CORS
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -53,6 +55,14 @@ namespace Api
                     .AllowAnyHeader();
             }));
     
+            services.Configure<MongoSettings>(Configuration.GetSection("mongo"));
+            services.Configure<MongoSettings>(options =>
+            {
+                options.ConnectionString = Configuration.GetSection("mongo:ConnectionString").Value;
+                options.Database = Configuration.GetSection("mongo:Database").Value;
+            });
+
+
             services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
 
             var jwtSettings = Configuration.GetSection("jwt").Get<JwtSettings>();
@@ -95,8 +105,10 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
 
+
             // CORS
             app.UseCors("MyPolicy");
+
             app.UseErrorHandler();
             app.UseAuthentication();
             app.UseMvc();
