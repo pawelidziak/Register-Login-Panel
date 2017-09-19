@@ -9,7 +9,7 @@ import {ILoginCommand} from '../_models/ILoginCommand';
 import {AuthService} from './auth.service';
 import {IUser} from '../_models/IUser';
 import {IUpdatePersonalCommand} from '../_models/IUpdatePersonalCommand';
-import {IUpdatePasswordCommand} from "../_models/IUpdatePasswordCommand";
+import {IUpdatePasswordCommand} from '../_models/IUpdatePasswordCommand';
 
 @Injectable()
 export class UserService {
@@ -38,9 +38,17 @@ export class UserService {
       })
       .catch((error: any) => {
         if (error) {
+          console.log(error);
           if (error.status === 401) {
-            return Observable.throw(new Error('Login failed. Invalid credentials.'));
+            console.log(error.json().error);
+            if (error.json().error === 'LoginFailed') {
+              return Observable.throw(new Error('Login failed. Invalid credentials.'));
+            }
+            if (error.json().error === 'InActiveUser') {
+              return Observable.throw(new Error('User is inactive. Please confirm your account.'));
+            }
           }
+          return Observable.throw(new Error(error.json().message));
         }
       });
   }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Domain;
 using Core.Repositories;
+using Infrastructure.Errors;
 using Infrastructure.Settings;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -22,6 +24,11 @@ namespace Infrastructure.Repositories
             if (client != null)
             {
                 _database = client.GetDatabase(settings.Value.Database);
+                bool isMongoLive = _database.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(1);
+                if(!isMongoLive){
+                    throw new DatabaseConnectionException("The database does not work as it should.");
+                }
+
                 Users = _database.GetCollection<User>("Users");
             }
                 

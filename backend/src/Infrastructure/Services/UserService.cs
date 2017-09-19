@@ -1,5 +1,4 @@
 using System;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,6 +8,11 @@ using Infrastructure.DTO;
 using Infrastructure.Errors;
 using Infrastructure.Extensions;
 using Infrastructure.Services.Encrypter;
+using System.Net;
+using System.Net.Mail;
+using System.Web;
+using System.Net.Mime;
+using Infrastructure.Services.EmailSender;
 
 namespace Infrastructure.Services
 {
@@ -18,13 +22,15 @@ namespace Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IJwtHandler _jwtHandler;
         private readonly IEncrypter _encrypter;
+        private readonly EmailService _email;
 
-        public UserService(IUserRepository userRepository, IJwtHandler jwtHandler, IMapper mapper, IEncrypter encrypter)
+        public UserService(IUserRepository userRepository, IJwtHandler jwtHandler, IMapper mapper, IEncrypter encrypter, EmailService email)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _jwtHandler = jwtHandler;
             _encrypter = encrypter;
+            _email = email;
         }
 
         public async Task<UserDto> GetUserAsync(Guid userId)
@@ -38,13 +44,18 @@ namespace Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if (user == null)
             {
-                throw new LoginFailedException($"Login failed. Invalid credentials. 1");
+                throw new LoginFailedException($"Login failed. Invalid credentials.");
             }
 
             var hash = _encrypter.GetHash(password, user.Salt);
             if (user.Password != hash)
             {
-                throw new LoginFailedException($"Login failed. Invalid credentials. 2");
+                throw new LoginFailedException($"Login failed. Invalid credentials.");
+            }
+
+            if (!user.IsActive)
+            {
+                throw new InActiveUserException($"User is inactive. Please confirm your account.");
             }
 
             var jwt = _jwtHandler.CreateToken(user.Id);
@@ -63,7 +74,7 @@ namespace Infrastructure.Services
             {
                 throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
             }
-            
+
             try
             {
                 var mailAddress = new MailAddress(email);
@@ -74,7 +85,8 @@ namespace Infrastructure.Services
             }
 
             var passwordRegex = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,10}";
-            if(!Regex.IsMatch(password, passwordRegex)){
+            if (!Regex.IsMatch(password, passwordRegex))
+            {
                 Console.WriteLine(password);
                 throw new ArgumentException($"Password does not meets the requirements.");
             }
@@ -84,6 +96,9 @@ namespace Infrastructure.Services
 
             user = new User(userId, role, name, email, hash, salt);
             await _userRepository.AddAsync(user);
+
+            var emailBody = $"<p style=\"font-size: 20px;\">Please confirm your account by clicking this link: <a href='http://www.google.com/'{user.Id}''>CONFIRM</a></p>";
+            await _email.SendAsync(email, "Confirm your account", emailBody);
         }
 
         public async Task UpdatePersonalAsync(Guid userId, string name, string email)
@@ -95,20 +110,20 @@ namespace Infrastructure.Services
             }
             var loggedEmail = user.Email;
             var userWithInputEmail = await _userRepository.GetAsync(email);
-            if (userWithInputEmail != null && userWithInputEmail.Email != loggedEmail) 
+            if (userWithInputEmail != null && userWithInputEmail.Email != loggedEmail)
             {
                 throw new UserAlreadyExistException($"User with email: '{email}' already exists.");
             }
-            if (string.IsNullOrWhiteSpace(email)) 
+            if (string.IsNullOrWhiteSpace(email))
             {
                 throw new InvalidRequestException($"Email cannot be empty.");
             }
-            if (string.IsNullOrWhiteSpace(name)) 
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new InvalidRequestException($"Name cannot be empty.");
             }
 
-            user.SetName(name);            
+            user.SetName(name);
             user.SetEmail(email);
             await _userRepository.UpdateAsync(user);
         }

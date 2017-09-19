@@ -60,6 +60,10 @@ public class ErrorHandlerMiddleware
                     statusCode = HttpStatusCode.Unauthorized; // 401
                     error = "LoginFailed";
                     break;
+                case Exception e when exceptionType == typeof(InActiveUserException):
+                    statusCode = HttpStatusCode.Unauthorized; // 401
+                    error = "InActiveUser";
+                    break;
                 case Exception e when exceptionType == typeof(UserAlreadyExistException):
                     statusCode = HttpStatusCode.Conflict; // 409
                     error = "UserAlreadyExist";
@@ -67,6 +71,10 @@ public class ErrorHandlerMiddleware
                 case Exception e when exceptionType == typeof(PasswordMismatchException):
                     statusCode = HttpStatusCode.Conflict; // 409
                     error = "PasswordMismatch";
+                    break;
+                case Exception e when exceptionType == typeof(DatabaseConnectionException):
+                    statusCode = HttpStatusCode.InternalServerError; // 409
+                    error = "DatabaseConnection";
                     break;
             }
 

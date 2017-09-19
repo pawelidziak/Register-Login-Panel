@@ -17,6 +17,7 @@ namespace Core.Domain
         public string Password { get; protected set; }
         public string Salt { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
+        public bool IsActive { get; protected set; }
 
         protected User() { }
 
@@ -29,6 +30,7 @@ namespace Core.Domain
             SetPassword(password);
             CreatedAt = DateTime.UtcNow.ToLocalTime();
             SetSalt(salt);
+            SetActive(false);
         }
 
         public void SetName(string name)
@@ -81,6 +83,11 @@ namespace Core.Domain
                 throw new ArgumentNullException($"User can not have an empty salt.");
             }
             Salt = salt;
+        }
+
+        public void SetActive(bool isActive)
+        {
+            IsActive = isActive;
         }
     }
 }

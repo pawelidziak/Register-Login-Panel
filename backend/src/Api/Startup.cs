@@ -8,6 +8,7 @@ using Core.Repositories;
 using Infrastructure.Mapper;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.EmailSender;
 using Infrastructure.Services.Encrypter;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,7 @@ namespace Api
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IJwtHandler, JwtHandler>();
             services.AddSingleton<IEncrypter, Encrypter>();
+            services.AddSingleton<EmailService>();
 
 
             // CORS
