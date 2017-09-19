@@ -4,7 +4,7 @@ import {RegisterComponent} from './register/register.component';
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {AuthGuard} from './_guards/auth.guard';
-
+import {PasswordConfirmedComponent} from './password-confirmed/password-confirmed.component';
 
 const appRoutes: Routes = [
   {
@@ -19,6 +19,10 @@ const appRoutes: Routes = [
     path: 'home',
     component: HomeComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'user/confirm/:id',
+    component: PasswordConfirmedComponent
   },
   // otherwise redirect to main-content
   {

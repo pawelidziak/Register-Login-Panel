@@ -9,10 +9,7 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static readonly ISet<User> _users = new HashSet<User>()
-        {
-            new User(Guid.NewGuid(), "user", "User Test", "t@t.pl", "ldCQnuD7fQ9EHk6dZj1Q65lXWxJJ28OOLJBOC3PHn+tVFHfXl66zNA==", "jvpTmeyxHJeCN9fcCsqkx5dkp+c+buSRTYjgOXon2Czl85rfuDVnPA==")
-        };
+        private static readonly ISet<User> _users = new HashSet<User>();
 
         public async Task<User> GetAsync(Guid id)
             => await Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
@@ -36,5 +33,6 @@ namespace Infrastructure.Repositories
             _users.Remove(user);
             await Task.CompletedTask;
         }
+
     }
 }

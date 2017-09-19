@@ -25,32 +25,33 @@ namespace Infrastructure.Repositories
             {
                 _database = client.GetDatabase(settings.Value.Database);
                 bool isMongoLive = _database.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(1);
-                if(!isMongoLive){
+                if (!isMongoLive)
+                {
                     throw new DatabaseConnectionException("The database does not work as it should.");
                 }
 
                 Users = _database.GetCollection<User>("Users");
             }
-                
+
         }
 
         public async Task<User> GetAsync(Guid id)
-        => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
+            => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<User> GetAsync(string email)
-        => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
+            => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
 
         public async Task<IEnumerable<User>> GetAllAsync()
-        => await Users.AsQueryable().ToListAsync();
+            => await Users.AsQueryable().ToListAsync();
 
         public async Task AddAsync(User user)
-        => await Users.InsertOneAsync(user);
+            => await Users.InsertOneAsync(user);
 
         public async Task RemoveAsync(Guid id)
-        => await Users.DeleteOneAsync(x => x.Id == id);
+            => await Users.DeleteOneAsync(x => x.Id == id);
 
         public async Task UpdateAsync(User user)
-        => await Users.ReplaceOneAsync(x => x.Id == user.Id, user);
+            => await Users.ReplaceOneAsync(x => x.Id == user.Id, user);
 
         public Task DeleteAsync(User user)
         {

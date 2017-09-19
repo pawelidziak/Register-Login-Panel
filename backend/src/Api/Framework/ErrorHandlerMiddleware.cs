@@ -60,9 +60,9 @@ public class ErrorHandlerMiddleware
                     statusCode = HttpStatusCode.Unauthorized; // 401
                     error = "LoginFailed";
                     break;
-                case Exception e when exceptionType == typeof(InActiveUserException):
+                case Exception e when exceptionType == typeof(ActivationUserException):
                     statusCode = HttpStatusCode.Unauthorized; // 401
-                    error = "InActiveUser";
+                    error = "ActivationUser";
                     break;
                 case Exception e when exceptionType == typeof(UserAlreadyExistException):
                     statusCode = HttpStatusCode.Conflict; // 409

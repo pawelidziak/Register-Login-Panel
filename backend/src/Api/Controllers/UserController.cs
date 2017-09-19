@@ -51,5 +51,12 @@ namespace Api.Controllers
             await _userService.UpdatePasswordAsync(userId, command.OldPassword, command.NewPassword);
             return NoContent(); //204
         }
+        [HttpPut("confirm/{userId}")]
+        public async Task<IActionResult> Put([FromBody]ActivateUser command)
+        {
+            // command.UserId = Guid.NewGuid();
+            await _userService.ActivateUser(command.UserId);
+            return NoContent(); //204
+        }
     }
 }

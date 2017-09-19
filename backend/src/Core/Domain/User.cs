@@ -89,5 +89,6 @@ namespace Core.Domain
         {
             IsActive = isActive;
         }
+
     }
 }

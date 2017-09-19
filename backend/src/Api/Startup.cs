@@ -41,7 +41,7 @@ namespace Api
 
             services.AddSingleton(AutoMapperConfig.Initialize());
 
-            services.AddScoped<IUserRepository, UserRepository>();
+            // services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IJwtHandler, JwtHandler>();

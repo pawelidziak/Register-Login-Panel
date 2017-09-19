@@ -11,5 +11,6 @@ namespace Infrastructure.Services
         Task<TokenDto> LoginAsync(string email, string password);
         Task UpdatePersonalAsync(Guid userId, string name, string email);
         Task UpdatePasswordAsync(Guid userId, string oldPassword, string newPassword);
+        Task ActivateUser(Guid userid);
     }
 }

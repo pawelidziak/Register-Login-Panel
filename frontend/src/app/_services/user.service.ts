@@ -10,6 +10,7 @@ import {AuthService} from './auth.service';
 import {IUser} from '../_models/IUser';
 import {IUpdatePersonalCommand} from '../_models/IUpdatePersonalCommand';
 import {IUpdatePasswordCommand} from '../_models/IUpdatePasswordCommand';
+import {IActivateUser} from '../_models/IActivateUser';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
           if (error.status === 409) {
             return Observable.throw(new Error('This email is occupied.'));
           }
+          return Observable.throw(new Error(error.json().message));
         }
       });
   }
@@ -108,6 +110,24 @@ export class UserService {
               return Observable.throw(new Error('Old password does not match.'));
             }
             return Observable.throw(new Error(error.json().message));
+        }
+      });
+  }
+
+  activateUser(command: IActivateUser): Observable<any> {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const options = new RequestOptions({ headers: headers });
+    return this.http.put('http://localhost:5000/user/confirm/' + command.userId, command, headers)
+      .catch((error: any) => {
+        if (error) {
+          if (error.status === 400) {
+            if (error.json().error === 'UserNotFound') {
+              return Observable.throw(new Error('User does not exists.'));
+            }
+          }
+          return Observable.throw(new Error(error.json().message));
         }
       });
   }

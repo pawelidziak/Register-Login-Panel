@@ -12,13 +12,15 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import {AuthGuard} from './_guards/auth.guard';
 import {AuthService} from './_services/auth.service';
+import { PasswordConfirmedComponent } from './password-confirmed/password-confirmed.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    PasswordConfirmedComponent
   ],
   imports: [
     BrowserModule,

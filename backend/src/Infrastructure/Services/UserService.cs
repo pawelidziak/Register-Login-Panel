@@ -55,7 +55,7 @@ namespace Infrastructure.Services
 
             if (!user.IsActive)
             {
-                throw new InActiveUserException($"User is inactive. Please confirm your account.");
+                throw new ActivationUserException($"User is inactive. Please confirm your account.");
             }
 
             var jwt = _jwtHandler.CreateToken(user.Id);
@@ -97,13 +97,13 @@ namespace Infrastructure.Services
             user = new User(userId, role, name, email, hash, salt);
             await _userRepository.AddAsync(user);
 
-            var emailBody = $"<p style=\"font-size: 20px;\">Please confirm your account by clicking this link: <a href='http://www.google.com/'{user.Id}''>CONFIRM</a></p>";
+            var emailBody = "<p style=\"font-size: 20px;\">Please confirm your account by clicking this link: <a href='http://localhost:4200/user/confirm/"+userId+"'>CONFIRM</a></p>";
             await _email.SendAsync(email, "Confirm your account", emailBody);
         }
 
         public async Task UpdatePersonalAsync(Guid userId, string name, string email)
         {
-            var user = await _userRepository.GetAsync(userId);
+            var user = await _userRepository.GetOrFailAsync(userId);
             if (user == null)
             {
                 throw new UserDoesNotExistsException($"User with id: '{userId}' does not exists.");
@@ -130,7 +130,7 @@ namespace Infrastructure.Services
 
         public async Task UpdatePasswordAsync(Guid userId, string oldPassword, string newPassword)
         {
-            var user = await _userRepository.GetAsync(userId);
+            var user = await _userRepository.GetOrFailAsync(userId);
 
             if (user == null)
             {
@@ -157,6 +157,21 @@ namespace Infrastructure.Services
 
             user.SetPassword(newHash);
             user.SetSalt(newSalt);
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task ActivateUser(Guid userId)
+        {
+            var user = await _userRepository.GetOrFailAsync(userId);
+            if (user == null)
+            {
+                throw new UserDoesNotExistsException($"User with id: '{userId}' does not exists.");
+            }
+            if (user.IsActive)
+            {
+                throw new ActivationUserException($"Your account is already active.");
+            }
+            user.SetActive(true);
             await _userRepository.UpdateAsync(user);
         }
 
